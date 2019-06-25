@@ -38,11 +38,11 @@ function buildPrompt (userAction) {
         promptString += userAction + "\n";
     } else {
         promptString += "Welcome to our store!\n";
-        promptString += "Our Hours Of Operation Are:\n Monday-Friday 10am-7pm\n Saturday 11am-4pm\n Sunday Closed\n";
+        promptString += "Our Hours Of Operation Are:\n Monday-Friday: 10am-7pm\n Saturday: 11am-4pm\n Sunday: Closed\n";
     }
 
-    promptString += "-------\nRULES\n1. actions: stock/buy \n2. quantity\n3. item\nexample: buy, 5, guavas\n-------\n";
-
+    promptString += "For Instructions\n type: Instructions\n";
+        
     promptString += "Store Inventory: \n-------\n";
 
 
@@ -53,6 +53,14 @@ function buildPrompt (userAction) {
 
         // Item Count
         promptString += (store[i][1] + "\n");
+
+        if (store[i][1] === 1){
+            promptString +="WARNING\n Low Stock\n"
+        }
+        if (store[i][1] === 0) {
+            promptString += "ALERT\n Out of Stock\n"
+        }
+
     }
 
     console.log(promptString);
@@ -65,6 +73,11 @@ function buildPrompt (userAction) {
 * action, count, item
 */
 function processUserInput (userInput) {
+
+    if(userInput === "Instructions") {
+        return storeOperations(buildPrompt("-------\nTo Use:\n1. actions: stock/buy \n2. quantity\n3. item\nexample: buy, 5, guavas\n-------\n"));
+        
+    }
 
     if(userInput === "quit") {
         console.log("Thank you for your business");
@@ -88,6 +101,9 @@ function processUserInput (userInput) {
     var item = userInput[2];
 
     // Update Inventory
+
+    
+    
     for(var j = 0; j < store.length; j++) {
 
         // Matches User Input to item in store
@@ -95,20 +111,24 @@ function processUserInput (userInput) {
             
             //2. action: (buy)
             if(action === "buy") {
-                //3. Add count to inventory
+                //3. subtract count from inventory
                 store[j][1] -= count;
                 return storeOperations(buildPrompt("You bought " + count + " " + item));
-
+                
             } 
-
-            //2a. action: (buy)
+            
+            //2a. action: (stock)
             if(action === "stock") {
+                // Add count to inventory
                 store[j][1] += count;
                 return storeOperations(buildPrompt("You stocked " + count + " " + item));
             }
 
         }
+        
     }
+    
+    
 
     return storeOperations(buildPrompt("Did not get a valid purchase"));
 
